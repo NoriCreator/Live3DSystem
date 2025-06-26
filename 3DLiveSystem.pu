@@ -1,0 +1,107 @@
+@startuml Live3DSystem
+
+class LiveManager {
+    -liveData: LiveData
+    -state: LiveState
+    +start()
+    +stop()
+    +pause()
+    +update()
+}
+
+class LiveData {
+    -characterControllers: List<CharacterController>
+    -liveScene: LiveScene
+    -timeline: Timeline
+    +loadFromFile(path: String)
+    +getTimeline(): Timeline
+    +initialize()
+    +moveScene(time: float)
+}
+
+class LiveScene {
+    -renderer: RenderManager
+    -effectManager: EffectManager
+    -lightController: LightController
+    -cameraController: CameraController
+    -audioManager: AudioManager
+}
+
+class CharacterController {
+    +name: String
+    +modelPath: String
+    +loadModel()
+    +setAnimation(vmdPath: String)
+    +setFacialMorph(morphName: String, weight: float)
+    +setLipSync(phoneme: String)
+}
+
+class RenderManager {
+    +renderFrame()
+    +setCamera(camera: Camera)
+    +setPostProcessingEffect(effect: String)
+}
+
+class EffectManager {
+    +playEffect(effectName: String, time: float)
+    +stopAllEffects()
+}
+
+class LightController {
+    +setLightPreset(name: String)
+    +updateLights(time: float)
+}
+
+class CameraController {
+    -cameraCinemachine : CameraCinemachine
+    +setCameraPath(path: CameraPath)
+    +updateCamera(time: float)
+}
+
+class AudioManager {
+    +playTrack(trackName: String)
+    +syncWithTimeline(time: float)
+    +stopTrack(trackName: String)
+}
+
+class Timeline {
+    +getCurrentTime(): float
+    +seek(time: float)
+    +isPaused(): bool
+}
+
+class CameraCinemachine {
+    +loadFromJSON(path: String)
+}
+
+class Effect {
+    +name: String
+    +startTime: float
+    +duration: float
+}
+
+class LiveState {
+    +isRunning: bool
+    +isPaused: bool
+    +isFinished: bool
+    +reset()
+}
+
+LiveManager --> LiveData
+LiveManager --> LiveState
+
+
+LiveData --> LiveScene
+LiveData --> Timeline
+
+LiveScene --> CharacterController
+LiveScene --> RenderManager
+LiveScene --> EffectManager
+LiveScene --> LightController
+LiveScene --> CameraController
+LiveScene --> AudioManager
+
+CameraController --> CameraCinemachine
+EffectManager --> Effect
+
+@enduml
